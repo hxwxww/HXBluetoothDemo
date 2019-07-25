@@ -183,6 +183,54 @@ extension HXCentralManager {
         reconnectPeripherals.removeAll()
     }
 
+    /// 向设备特征写数据
+    ///
+    /// - Parameters:
+    ///   - peripheral: 设备
+    ///   - characteristic: 特征
+    ///   - value: 数据
+    func writeValueForCharacteristic(peripheral: CBPeripheral, characteristic: CBCharacteristic, value: Data) {
+        if characteristic.properties.contains(.writeWithoutResponse) {
+            /// 无响应
+            peripheral.writeValue(value, for: characteristic, type: .withoutResponse)
+            HXLog("\(characteristic.uuid.uuidString) did write characteristic value: \(HXBLEUtils.hexStringFromData(value)) without response")
+        } else if characteristic.properties.contains(.write) {
+            /// 有回复
+            peripheral.writeValue(value, for: characteristic, type: .withResponse)
+        } else {
+            /// 不能写
+            HXLog("\(characteristic.uuid.uuidString) can not write value")
+        }
+    }
+    
+    /// 向设备特征读数据
+    ///
+    /// - Parameters:
+    ///   - peripheral: 设备
+    ///   - characteristic: 特征
+    func readValueForCharacteristic(peripheral: CBPeripheral, characteristic: CBCharacteristic) {
+        peripheral.readValue(for: characteristic)
+    }
+    
+    /// 向设备特征描述符写数据
+    ///
+    /// - Parameters:
+    ///   - peripheral: 设备
+    ///   - descriptor: 特征描述符
+    ///   - value: 数据
+    func writeValueForDescriptor(peripheral: CBPeripheral, descriptor: CBDescriptor, value: Data) {
+        peripheral.writeValue(value, for: descriptor)
+    }
+    
+    /// 向设备特征描述符读数据
+    ///
+    /// - Parameters:
+    ///   - peripheral: 设备
+    ///   - characteristic: 特征描述符
+    func readValueForDescriptor(peripheral: CBPeripheral, descriptor: CBDescriptor) {
+        peripheral.readValue(for: descriptor)
+    }
+    
 }
 
 // MARK: -  Private Methods
@@ -338,54 +386,6 @@ extension HXCentralManager {
                 break
             }
         }
-    }
-    
-    /// 向设备特征写数据
-    ///
-    /// - Parameters:
-    ///   - peripheral: 设备
-    ///   - characteristic: 特征
-    ///   - value: 数据
-    func writeValueForCharacteristic(peripheral: CBPeripheral, characteristic: CBCharacteristic, value: Data) {
-        if characteristic.properties.contains(.writeWithoutResponse) {
-            /// 无响应
-            peripheral.writeValue(value, for: characteristic, type: .withoutResponse)
-            HXLog("\(characteristic.uuid.uuidString) did write characteristic value: \(HXBLEUtils.hexStringFromData(value)) without response")
-        } else if characteristic.properties.contains(.write) {
-            /// 有回复
-            peripheral.writeValue(value, for: characteristic, type: .withResponse)
-        } else {
-            /// 不能写
-            HXLog("\(characteristic.uuid.uuidString) can not write value")
-        }
-    }
-    
-    /// 向设备特征读数据
-    ///
-    /// - Parameters:
-    ///   - peripheral: 设备
-    ///   - characteristic: 特征
-    func readValueForCharacteristic(peripheral: CBPeripheral, characteristic: CBCharacteristic) {
-        peripheral.readValue(for: characteristic)
-    }
-    
-    /// 向设备特征描述符写数据
-    ///
-    /// - Parameters:
-    ///   - peripheral: 设备
-    ///   - descriptor: 特征描述符
-    ///   - value: 数据
-    func writeValueForDescriptor(peripheral: CBPeripheral, descriptor: CBDescriptor, value: Data) {
-        peripheral.writeValue(value, for: descriptor)
-    }
-    
-    /// 向设备特征描述符读数据
-    ///
-    /// - Parameters:
-    ///   - peripheral: 设备
-    ///   - characteristic: 特征描述符
-    func readValueForDescriptor(peripheral: CBPeripheral, descriptor: CBDescriptor) {
-        peripheral.readValue(for: descriptor)
     }
     
 }
